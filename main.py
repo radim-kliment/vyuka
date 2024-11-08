@@ -10,5 +10,12 @@ data = pd.read_csv('Sleep_Efficiency.csv')
 
 data = data.drop(['ID', 'Bedtime', 'Wakeup time'], axis=1)
 
+data['Smoking status']  = pd.Categorical(data['Smoking status'])
+data['Smoking status'] = data['Smoking status'].cat.codes
+data['Gender'] = pd.Categorical(data['Gender'])
+data['Gender'] = data['Gender'].cat.codes
+
+
+
 print(data.head()) 
 
