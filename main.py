@@ -27,5 +27,8 @@ model = keras.Sequential(
     ]
 )
 
+model.compile(optimizer='adam', loss='mean_squared_error')
+model.fit(x, y, epochs=50)
+
 print(data.head()) 
 
