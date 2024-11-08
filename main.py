@@ -15,7 +15,17 @@ data['Smoking status'] = data['Smoking status'].cat.codes
 data['Gender'] = pd.Categorical(data['Gender'])
 data['Gender'] = data['Gender'].cat.codes
 
+x = data.drop('Sleep efficiency', axis=1)
+y = data['Sleep efficiency']
 
+model = keras.Sequential(
+    [
+        layers.Dense(x.shape[1], activation="relu"),
+        layers.Dense(x.shape[1]//2, activation="relu"),
+        layers.Dense(x.shape[1]//3, activation="relu"),
+        layers.Dense(1, activation="relu"),
+    ]
+)
 
 print(data.head()) 
 
