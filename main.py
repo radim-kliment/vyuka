@@ -2,7 +2,7 @@ import pandas as pd
 import keras
 import tensorflow as tf
 from keras import layers
-
+from sklearn.model_selection import train_test_split
 # Load the data
 data = pd.read_csv('Sleep_Efficiency.csv')
 
@@ -14,6 +14,7 @@ data = pd.read_csv('Sleep_Efficiency.csv')
 # python -m venv env
 # source env/bin/activate
 # pip install pandas keras tensorflow
+# pip install scikit-learn
 
 data = data.drop(['ID', 'Bedtime', 'Wakeup time'], axis=1)
 
@@ -24,27 +25,30 @@ data['Gender'] = data['Gender'].cat.codes
 
 data = data.astype('float32')
 
+data = data.dropna()
+
 x = data.drop('Sleep efficiency', axis=1)
 y = data['Sleep efficiency']
 
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
+
 model = keras.Sequential(
     [
-        layers.Dense(x.shape[1], activation="relu"),
-        layers.Dense(x.shape[1]//2, activation="relu"),
-        layers.Dense(x.shape[1]//3, activation="relu"),
-        layers.Dense(1, activation="relu"),
+        layers.Dense(X_train.shape[1], activation="elu"),
+        layers.Dense(X_train.shape[1]//2, activation="elu"),
+        layers.Dense(X_train.shape[1]//3, activation="elu"),
+        layers.Dense(1, activation="elu"),
     ]
 )
 
 model.compile(optimizer='adam', loss='mean_squared_error')
 model.fit(x, y, epochs=50)
 
-score = model.evaluate(x, y)
+score = model.evaluate(X_test, y_test)
 
-if score < 0.2:
-    print("Model is good")
-    converter = tf.lite.TFLiteConverter.from_keras_model(model) 
-    tflite_model = converter.convert()
-    with open('converted_model.tflite', 'wb') as f:     
-        f.write(tflite_model)
+converter = tf.lite.TFLiteConverter.from_keras_model(model) 
+tflite_model = converter.convert()
+
+with open('converted_model.tflite', 'wb') as f:     
+    f.write(tflite_model)
 
