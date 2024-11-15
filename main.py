@@ -34,15 +34,15 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
 
 model = keras.Sequential(
     [
-        layers.Dense(X_train.shape[1], activation="elu"),
-        layers.Dense(X_train.shape[1]//2, activation="elu"),
-        layers.Dense(X_train.shape[1]//3, activation="elu"),
-        layers.Dense(1, activation="elu"),
+        layers.Dense(X_train.shape[1], activation="relu"),
+        layers.Dense(X_train.shape[1]//2, activation="relu"),
+        layers.Dense(X_train.shape[1]//3, activation="relu"),
+        layers.Dense(1, activation="relu"),
     ]
 )
 
 model.compile(optimizer='adam', loss='mean_squared_error')
-model.fit(x, y, epochs=50)
+model.fit(X_train, y_train, epochs=50, validation_split=0.17)
 
 score = model.evaluate(X_test, y_test)
 
